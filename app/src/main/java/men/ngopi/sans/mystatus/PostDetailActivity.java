@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,7 +22,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-public class PostDetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class PostDetailActivity extends AppCompatActivity implements View.OnClickListener, SearchView.OnQueryTextListener {
     TextView nameTxt;
     TextView postTxt;
     FloatingActionButton addBtn;
@@ -32,6 +33,8 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
     private CommentAdapter commentAdapter;
     private RecyclerView commentRecyclerView;
     LinearLayout listContainer;
+    SearchView search;
+    String searchQuery = "";
 
     public static PostDetailActivity getInstance() {
         return instance;
@@ -48,6 +51,7 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
         this.postTxt = findViewById(R.id.post_txt);
         this.addBtn = findViewById(R.id.add_btn);
         this.noCommentTxt = findViewById(R.id.no_comment_txt);
+        this.search = findViewById(R.id.search);
         commentAdapter = new CommentAdapter();
         commentRecyclerView = findViewById(R.id.comment_recycler_view);
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -61,20 +65,23 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
         postTxt.setText(data.getPost());
 
         addBtn.setOnClickListener(this);
+        search.setOnQueryTextListener(this);
 //        this.fetchComments();
     }
 
     public void fetchComments() {
         CommentHelper.getInstance().open();
-        this.comments = data.fetchComments();
+        this.comments = data.fetchComments(searchQuery);
         CommentHelper.getInstance().close();
 
         if (comments.size() == 0) {
             noCommentTxt.setVisibility(View.VISIBLE);
             listContainer.setVisibility(View.GONE);
+            search.setVisibility(View.GONE);
         } else {
             noCommentTxt.setVisibility(View.GONE);
             listContainer.setVisibility(View.VISIBLE);
+            search.setVisibility(View.VISIBLE);
             commentAdapter.setData(this.comments);
             commentRecyclerView.setAdapter(commentAdapter);
         }
@@ -93,5 +100,17 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
 
         //refetch
         this.fetchComments();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        searchQuery = newText;
+        fetchComments();
+        return false;
     }
 }

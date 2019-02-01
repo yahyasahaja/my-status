@@ -42,7 +42,11 @@ public class PostModel {
         this.id = id;
     }
 
+    public ArrayList<CommentModel> fetchComments(String searchQuery) {
+        return this.comments = CommentHelper.getInstance().fetchCommentsByPostId(id, searchQuery);
+    }
+
     public ArrayList<CommentModel> fetchComments() {
-        return this.comments = CommentHelper.getInstance().fetchCommentsByPostId(id);
+        return this.comments = CommentHelper.getInstance().fetchCommentsByPostId(id, "");
     }
 }

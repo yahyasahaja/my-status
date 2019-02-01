@@ -63,10 +63,23 @@ public class PostHelper {
     }
 
     public ArrayList<PostModel> fetchAllPosts() {
+        return this.fetchAllPosts(null);
+    }
+
+    public ArrayList<PostModel> fetchAllPosts(String search) {
+        String selection = null;
+//        String[] selectionArgs;
+
+        if (search != null) {
+            if (search.length() > 0) {
+                selection = NAME + " LIKE '%" + search + "%' OR " + POST + " LIKE '%" + search + "%'";
+            }
+        }
+
         Cursor cursor = database.query(
                 POST_TABLE,
                 null,
-                null,
+                selection,
                 null,
                 null,
                 null,

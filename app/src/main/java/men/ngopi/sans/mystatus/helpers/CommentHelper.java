@@ -50,11 +50,26 @@ public class CommentHelper {
     }
 
     public ArrayList<CommentModel> fetchCommentsByPostId(int postId) {
+        return fetchCommentsByPostId(postId, null);
+    }
+
+    public ArrayList<CommentModel> fetchCommentsByPostId(int postId, String search) {
+        String selection = POST_ID + " = '" + postId + "'";
+//        String[] selectionArgs;
+        Log.d("search", search);
+        if (search != null) {
+            if (search.length() > 0) {
+                selection = POST_ID + " = '" + postId + "' AND (" +
+                        NAME + " LIKE '%" + search + "%' OR " +
+                        COMMENT + " LIKE '%" + search + "%')";
+            }
+        }
+
         Cursor cursor = database.query(
                 COMMENT_TABLE,
                 null,
-                POST_ID + " = ?",
-                new String[]{ "" + postId },
+                selection,
+                null,
                 null,
                 null,
                 _ID + " DESC",
@@ -78,10 +93,23 @@ public class CommentHelper {
     }
 
     public ArrayList<CommentModel> fetchAllComments() {
+        return this.fetchAllComments(null);
+    }
+
+    public ArrayList<CommentModel> fetchAllComments(String search) {
+        String selection = null;
+//        String[] selectionArgs;
+
+        if (search != null) {
+            if (search.length() > 0) {
+                selection = NAME + " LIKE '%" + search + "%' OR " + COMMENT + " LIKE '%" + search + "%'";
+            }
+        }
+
         Cursor cursor = database.query(
                 COMMENT_TABLE,
                 null,
-                null,
+                selection,
                 null,
                 null,
                 null,

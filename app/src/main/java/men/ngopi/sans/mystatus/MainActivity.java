@@ -5,8 +5,10 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,13 +24,15 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static MainActivity instance;
     private PostHelper postHelper;
     private CommentHelper commentHelper;
     private ArrayList<PostModel> posts;
     private PostAdapter postAdapter;
     private RecyclerView postRecylerView;
+    private SearchView search;
+    private String searchQuery = "";
 
     public static MainActivity getInstance() {
         return instance;
@@ -44,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
         postHelper = new PostHelper();
         commentHelper = new CommentHelper();
         postAdapter = new PostAdapter();
+        search = findViewById(R.id.search);
         postRecylerView = findViewById(R.id.post_recycler_view);
         postRecylerView.setLayoutManager(new LinearLayoutManager(this));
+
+        search.setOnQueryTextListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,16 +84,16 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void fetchAllPosts() {
         postHelper.open();
-        this.posts = postHelper.fetchAllPosts();
+        this.posts = postHelper.fetchAllPosts(searchQuery);
         postAdapter.setData(this.posts);
         postRecylerView.setAdapter(postAdapter);
         postHelper.close();
@@ -100,5 +107,17 @@ public class MainActivity extends AppCompatActivity {
 
         //refetch
         this.fetchAllPosts();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        searchQuery = newText;
+        fetchAllPosts();
+        return false;
     }
 }

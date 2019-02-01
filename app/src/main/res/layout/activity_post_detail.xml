@@ -44,6 +44,19 @@
             android:text="No comment yet"/>
 
         <LinearLayout
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></androidx.appcompat.widget.SearchView>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/list_container"
             android:background="@android:color/white"
             android:orientation="vertical"
