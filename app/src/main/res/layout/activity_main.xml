@@ -27,9 +27,10 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:background="@color/cloud"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
-            android:layout_marginBottom="10dp"
+            android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -52,10 +53,14 @@
 
             <!--</com.google.android.material.textfield.TextInputLayout>-->
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search"
+            <com.mancj.materialsearchbar.MaterialSearchBar
+                style="@style/MaterialSearchBarLight"
+                app:mt_hint="Search a post name/description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></androidx.appcompat.widget.SearchView>
+                android:layout_height="wrap_content"
+                app:mt_placeholder="Search"
+                app:mt_borderlessRippleEnabled="true"
+                android:id="@+id/search" />
         </LinearLayout>
 
         <include layout="@layout/content_main" />

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -76,7 +77,10 @@ public class PostHelper {
             }
         }
 
-        Cursor cursor = database.query(
+        Cursor cursor = null;
+        try {
+            database.beginTransaction();
+            cursor = database.query(
                 POST_TABLE,
                 null,
                 selection,
@@ -85,7 +89,13 @@ public class PostHelper {
                 null,
                 _ID + " DESC",
                 null
-        );
+            );
+            database.setTransactionSuccessful();
+        } catch (SQLiteException err) {
+            Log.e("Fetching Post", err.toString());
+        }
+        database.endTransaction();
+
         return fetchPost(cursor);
     }
 

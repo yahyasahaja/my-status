@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -17,6 +18,8 @@ import men.ngopi.sans.mystatus.helpers.CommentHelper;
 import men.ngopi.sans.mystatus.helpers.PostHelper;
 import men.ngopi.sans.mystatus.models.PostModel;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -24,14 +27,14 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements TextWatcher {
     private static MainActivity instance;
     private PostHelper postHelper;
     private CommentHelper commentHelper;
     private ArrayList<PostModel> posts;
     private PostAdapter postAdapter;
     private RecyclerView postRecylerView;
-    private SearchView search;
+    private MaterialSearchBar search;
     private String searchQuery = "";
 
     public static MainActivity getInstance() {
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         postRecylerView = findViewById(R.id.post_recycler_view);
         postRecylerView.setLayoutManager(new LinearLayoutManager(this));
 
-        search.setOnQueryTextListener(this);
+        search.addTextChangeListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -110,14 +113,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        searchQuery = newText;
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        searchQuery = s.toString();
         fetchAllPosts();
-        return false;
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }

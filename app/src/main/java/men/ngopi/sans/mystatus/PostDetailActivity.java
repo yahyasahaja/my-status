@@ -10,6 +10,8 @@ import men.ngopi.sans.mystatus.models.PostModel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,12 +19,13 @@ import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-public class PostDetailActivity extends AppCompatActivity implements View.OnClickListener, SearchView.OnQueryTextListener {
+public class PostDetailActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
     TextView nameTxt;
     TextView postTxt;
     FloatingActionButton addBtn;
@@ -33,7 +36,7 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
     private CommentAdapter commentAdapter;
     private RecyclerView commentRecyclerView;
     LinearLayout listContainer;
-    SearchView search;
+    MaterialSearchBar search;
     String searchQuery = "";
 
     public static PostDetailActivity getInstance() {
@@ -65,7 +68,7 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
         postTxt.setText(data.getPost());
 
         addBtn.setOnClickListener(this);
-        search.setOnQueryTextListener(this);
+        search.addTextChangeListener(this);
 //        this.fetchComments();
     }
 
@@ -103,14 +106,18 @@ public class PostDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        searchQuery = newText;
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        searchQuery = s.toString();
         fetchComments();
-        return false;
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
